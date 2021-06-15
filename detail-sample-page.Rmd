@@ -21,6 +21,8 @@ options(scipen = 999)
 ```{r}
 library(tidyverse)
 library(hkdatasets)
+
+library(leaflet)
 ```
 
 ```{r}
@@ -57,9 +59,19 @@ t(hk_accidents_selected) %>%
 
 Location of the accident is shown below.
 
-```{r, eval=FALSE}
-# TODO: add interactive map viewer showing location of the accident
+```{r, eval=TRUE}
+is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
+
+# TODO: print additional message if collision does not have long/lat data
 ```
+
+```{r, eval=is_valid_loglat, out.width='100%'}
+
+leaflet(hk_accidents_selected) %>%
+  addProviderTiles("Stamen.TonerLite") %>%
+  addMarkers(~longitude, ~latitude)
+```
+
 
 ---
 
