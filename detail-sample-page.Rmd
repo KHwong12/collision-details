@@ -1,0 +1,21 @@
+---
+title: "Details of Traffic Collision - Test Layout"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    number_sections: no
+    theme: lumen
+    toc: no
+    toc_float: no
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.width = 9.45, fig.height = 5.91,
+                      dpi = 300,
+                      fig.path = "fig/")
+
+options(scipen = 999)
+```
+
