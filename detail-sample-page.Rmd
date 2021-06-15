@@ -18,6 +18,12 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 options(scipen = 999)
 ```
 
+```{r, eval=FALSE}
+# Temp solution before next release to CRAN
+devtools::install_github("Hong-Kong-Districts-Info/hkdatasets", ref = "feature/updated-collision-data")
+```
+
+
 
 ```{r}
 library(dplyr)
@@ -44,9 +50,9 @@ hk_accidents_selected = filter(hk_accidents, Serial_No_ == SELECTED_ACCIDENT_NO)
 
 ## Detail Report of Accident No. `r SELECTED_ACCIDENT_NO`
 
-This accident happened on `r strftime(hk_accidents_selected[["Date"]], "%d %B, %Y (%A)")` at `r hk_accidents_selected[["Time"]]`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]`. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
+This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
 
-The road where accident happened is a `r hk_accidents_selected[["Road_Classification"]]`.
+The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
 The full details of this accident are shown below.
 
