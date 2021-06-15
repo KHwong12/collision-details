@@ -4,26 +4,33 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
     number_sections: no
+    css: styles/styles.css
     theme: lumen
     toc: no
     toc_float: no
     self_contained: false
+    lib_dir: libs
 always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
-                      fig.width = 9.45, fig.height = 5.91,
-                      dpi = 300,
-                      fig.path = "fig/")
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 options(scipen = 999)
 ```
 
+```{r, eval=FALSE}
+# Temp solution before next release to CRAN
+devtools::install_github("Hong-Kong-Districts-Info/hkdatasets", ref = "feature/updated-collision-data")
+```
+
+
 
 ```{r}
-library(tidyverse)
+library(dplyr)
 library(hkdatasets)
+
+library(leaflet)
 ```
 
 ```{r}
@@ -44,9 +51,9 @@ hk_accidents_selected = filter(hk_accidents, Serial_No_ == SELECTED_ACCIDENT_NO)
 
 ## Detail Report of Accident No. `r SELECTED_ACCIDENT_NO`
 
-This accident happened on `r strftime(hk_accidents_selected[["Date"]], "%d %B, %Y (%A)")` at `r hk_accidents_selected[["Time"]]`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]`. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
+This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
 
-The road where accident happened is a `r hk_accidents_selected[["Road_Classification"]]`.
+The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
 The full details of this accident are shown below.
 
@@ -60,9 +67,19 @@ t(hk_accidents_selected) %>%
 
 Location of the accident is shown below.
 
-```{r, eval=FALSE}
-# TODO: add interactive map viewer showing location of the accident
+```{r, eval=TRUE}
+is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
+
+# TODO: print additional message if collision does not have long/lat data
 ```
+
+```{r, eval=is_valid_loglat, out.width='100%'}
+
+leaflet(hk_accidents_selected) %>%
+  addProviderTiles("Stamen.TonerLite") %>%
+  addMarkers(~longitude, ~latitude)
+```
+
 
 ---
 
