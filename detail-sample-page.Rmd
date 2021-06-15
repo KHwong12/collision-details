@@ -19,3 +19,47 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
 options(scipen = 999)
 ```
 
+
+```{r}
+library(tidyverse)
+library(hkdatasets)
+```
+
+```{r}
+## Take data from {hkdatasets}
+hk_accidents = hkdatasets::hk_accidents
+hk_vehicles = hkdatasets::hk_vehicles
+hk_casualties = hkdatasets::hk_casualties
+```
+
+```{r}
+# Selected for test
+SELECTED_ACCIDENT_NO = 66897
+
+hk_accidents_selected = filter(hk_accidents, Serial_No_ == SELECTED_ACCIDENT_NO)
+
+```
+
+
+## Detail Report of Accident No. `r SELECTED_ACCIDENT_NO`
+
+This accident happened on `r strftime(hk_accidents_selected[["Date"]], "%d %B, %Y (%A)")` at `r hk_accidents_selected[["Time"]]`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]`. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
+
+The road where accident happened is a `r hk_accidents_selected[["Road_Classification"]]`.
+
+The full details of this accident are shown below.
+
+```{r}
+t(hk_accidents_selected) %>% 
+  knitr::kable(caption = "Details of accident", digits = 3, format.args = list(big.mark = ",")) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T)
+```
+
+
+Location of the accident is shown below.
+
+```{r, eval=FALSE}
+# TODO: add interactive map viewer showing location of the accident
+```
+
