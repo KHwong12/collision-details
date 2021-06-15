@@ -4,6 +4,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   html_document:
     number_sections: no
+    css: styles/styles.css
     theme: lumen
     toc: no
     toc_float: no
