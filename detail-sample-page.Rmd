@@ -9,6 +9,7 @@ output:
     toc: no
     toc_float: no
     self_contained: false
+    lib_dir: libs
 always_allow_html: yes
 ---
 
