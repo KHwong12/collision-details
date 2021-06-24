@@ -85,8 +85,9 @@ t(hk_accidents_selected) %>%
   kableExtra::column_spec(1, bold = T, border_right = T)
 ```
 
+<br>
 
-Location of the accident is shown below.
+**Precise location**: `r tools::toTitleCase(tolower(hk_accidents_selected[["Precise_Location"]]))`
 
 ```{r, eval=TRUE}
 is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
