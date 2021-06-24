@@ -113,7 +113,9 @@ hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == SELECTED_ACCIDENT_NO)
 ```{r}
 hk_vehicles_selected  %>% 
   knitr::kable(caption = "List of vehicles involved", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
 
 ## Causalities
@@ -126,5 +128,7 @@ hk_casualties_selected = filter(hk_casualties, Serial_No_ == SELECTED_ACCIDENT_N
 hk_casualties_selected %>% 
   select(-c(Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
   knitr::kable(caption = "List of casualties", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
