@@ -1,6 +1,6 @@
 ---
 title: "Details of Traffic Collision - Test Layout"
-date: '`r format(Sys.Date(), "%B %d, %Y")`'
+date: 'Last updated: `r format(Sys.Date(), "%B %d %Y")`'
 output:
   html_document:
     number_sections: no
@@ -32,6 +32,8 @@ library(hkdatasets)
 
 library(leaflet)
 library(kableExtra)
+
+library(htmltools)
 ```
 
 ```{r}
@@ -52,6 +54,24 @@ hk_accidents_selected = filter(hk_accidents, Serial_No_ == SELECTED_ACCIDENT_NO)
 
 ## Detail Report of Accident No. `r SELECTED_ACCIDENT_NO`
 
+<br>
+
+```{r}
+# Fill color palette according to the severity of the accident
+fill_palette <- colorFactor(palette = c("#230B4C", "#C03A51", "#F1701E"), domain = c("Fatal", "Serious", "Slight"))
+
+htmltools::HTML(
+  paste(
+    # Square symbol indicating severity level
+    '<div style="height:20px; width:20px; float:left; margin-right:10px; background-color:', fill_palette(hk_accidents_selected[["Severity"]]), '";> </div>',
+    
+    # Collision severity
+    '<h3 style="display: inline !important">', hk_accidents_selected[["Severity"]], ' Collision', '</h3>'
+  )
+)
+```
+
+
 This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
 
 The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
@@ -65,8 +85,9 @@ t(hk_accidents_selected) %>%
   kableExtra::column_spec(1, bold = T, border_right = T)
 ```
 
+<br>
 
-Location of the accident is shown below.
+**Precise location**: `r tools::toTitleCase(tolower(hk_accidents_selected[["Precise_Location"]]))`
 
 ```{r, eval=TRUE}
 is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
@@ -93,7 +114,9 @@ hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == SELECTED_ACCIDENT_NO)
 ```{r}
 hk_vehicles_selected  %>% 
   knitr::kable(caption = "List of vehicles involved", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
 
 ## Causalities
@@ -106,5 +129,7 @@ hk_casualties_selected = filter(hk_casualties, Serial_No_ == SELECTED_ACCIDENT_N
 hk_casualties_selected %>% 
   select(-c(Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
   knitr::kable(caption = "List of casualties", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
