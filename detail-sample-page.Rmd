@@ -76,15 +76,6 @@ This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d 
 
 The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
-The full details of this accident are shown below.
-
-```{r}
-t(hk_accidents_selected) %>% 
-  knitr::kable(caption = "Details of accident", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
-  kableExtra::column_spec(1, bold = T, border_right = T)
-```
-
 <br>
 
 **Precise location**: `r tools::toTitleCase(tolower(hk_accidents_selected[["Precise_Location"]]))`
@@ -102,6 +93,21 @@ leaflet(hk_accidents_selected) %>%
   addMarkers(~longitude, ~latitude)
 ```
 
+
+---
+
+## Details of the accident
+
+The full details of this accident are shown below.
+
+```{r}
+t(hk_accidents_selected) %>% 
+  knitr::kable(caption = "Details of accident", digits = 3, format.args = list(big.mark = ",")) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T)
+```
+
+<br>
 
 ---
 
