@@ -21,7 +21,7 @@ options(scipen = 999)
 
 ```{r, eval=FALSE}
 # Temp solution before next release to CRAN
-devtools::install_github("Hong-Kong-Districts-Info/hkdatasets", ref = "feature/updated-collision-data")
+devtools::install_github("Hong-Kong-Districts-Info/hkdatasets@f6df2ef48e62d5da1d643e04e266dc876d488f37")
 ```
 
 
