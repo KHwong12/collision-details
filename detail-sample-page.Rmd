@@ -10,6 +10,8 @@ output:
     toc_float: no
     self_contained: false
     lib_dir: libs
+    includes:
+      after_body: templates/footer.html
 always_allow_html: yes
 ---
 
@@ -139,3 +141,4 @@ hk_casualties_selected %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
+
