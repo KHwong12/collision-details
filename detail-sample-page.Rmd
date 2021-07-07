@@ -106,7 +106,7 @@ leaflet(hk_accidents_selected) %>%
 
 ## Details of the accident {.tabset }
 
-The full details of this accident are shown below.
+Click one of the following tabs to check one specific category details of the collision. Or, click **Show all details** tab to check the full list of details.
 
 ```{r}
 # classify variables available into separate major types
@@ -209,6 +209,25 @@ knitr::kable(
   col.names	= c("Details", "Description"),
   table.attr = 'id="accident-subtable"'
 ) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+### Show all details
+
+<br>
+
+Full details of the accident is shown below.
+
+<br>
+
+```{r}
+knitr::kable(
+  table_all,
+  col.names = c("Details", "Description"),
+  table.attr = 'id="accident-subtable"') %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
   kableExtra::column_spec(1, bold = T, border_right = T) %>%
   # change text color and background color of header row
