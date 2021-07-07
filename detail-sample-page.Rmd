@@ -47,6 +47,11 @@ hk_casualties = hkdatasets::hk_casualties
 ```
 
 ```{r}
+# color and html properties
+LUMEN_THEME_COLOR = "#158cba"
+```
+
+```{r}
 # Selected for test
 SELECTED_ACCIDENT_NO = 66897
 
@@ -148,15 +153,42 @@ table_all = filter(hk_accidents_selected_outtable_arrange, !is.na(vartype)) %>% 
 ```
 
 
-
 ```{r}
-t(hk_accidents_selected) %>% 
-  knitr::kable(caption = "Details of accident", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
-  kableExtra::column_spec(1, bold = T, border_right = T)
+knitr::kable(
+  table_whenwhere,
+  col.names	= c("Details", "Description"),
+  # Add unique id for further control with css
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
 ```
 
-<br>
+```{r}
+knitr::kable(
+  table_what,
+  col.names	= c("Details", "Description"),
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+```{r}
+knitr::kable(
+  table_how,
+  col.names	= c("Details", "Description"),
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
 
 ---
 
