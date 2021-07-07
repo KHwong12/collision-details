@@ -10,6 +10,8 @@ output:
     toc_float: no
     self_contained: false
     lib_dir: libs
+    includes:
+      after_body: templates/footer.html
 always_allow_html: yes
 ---
 
@@ -21,13 +23,14 @@ options(scipen = 999)
 
 ```{r, eval=FALSE}
 # Temp solution before next release to CRAN
-devtools::install_github("Hong-Kong-Districts-Info/hkdatasets", ref = "feature/updated-collision-data")
+devtools::install_github("Hong-Kong-Districts-Info/hkdatasets@f6df2ef48e62d5da1d643e04e266dc876d488f37")
 ```
 
 
 
 ```{r}
 library(dplyr)
+library(tidyr)
 library(hkdatasets)
 
 library(leaflet)
@@ -41,6 +44,11 @@ library(htmltools)
 hk_accidents = hkdatasets::hk_accidents
 hk_vehicles = hkdatasets::hk_vehicles
 hk_casualties = hkdatasets::hk_casualties
+```
+
+```{r}
+# color and html properties
+LUMEN_THEME_COLOR = "#158cba"
 ```
 
 ```{r}
@@ -76,15 +84,6 @@ This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d 
 
 The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
-The full details of this accident are shown below.
-
-```{r}
-t(hk_accidents_selected) %>% 
-  knitr::kable(caption = "Details of accident", digits = 3, format.args = list(big.mark = ",")) %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
-  kableExtra::column_spec(1, bold = T, border_right = T)
-```
-
 <br>
 
 **Precise location**: `r tools::toTitleCase(tolower(hk_accidents_selected[["Precise_Location"]]))`
@@ -102,6 +101,140 @@ leaflet(hk_accidents_selected) %>%
   addMarkers(~longitude, ~latitude)
 ```
 
+
+---
+
+## Details of the accident {.tabset }
+
+Click one of the following tabs to check one specific category details of the collision. Or, click **Show all details** tab to check the full list of details.
+
+```{r}
+# classify variables available into separate major types
+# require frequent update when dataset changes
+vartype_whenwhere = c("Date_Time", "Serial_No_", "District_Council_District", "Street_Name", 
+                      "Second_str", "Precise_Location", "Road_Hierarchy", "Structure_Type", "Latitude", "Longitude")
+
+vartype_what = c("Severity" , "Type_of_Collision_with_cycle" , "No_of_Vehicles_Involved" , "No_of_Casualties_Injured",
+                 "Hit_and_Run" , "Weather" , "Rain" , "Natural_Light")
+
+vartype_how = c("Vehicle_Movements", "Overtaking", "Road_Type", "Junction_Type", "Within_70m", "Crossing_Type", 
+                "Crossing_Control", "Road_Ownership")
+```
+
+```{r}
+# convert all columns to chr type
+row_chr = lapply(hk_accidents_selected, function(x) { ifelse(is.na(x), x, as.character(x)) })
+
+# convert back to data frame again, then pivot from single row to single column
+hk_accidents_selected_outtable = row_chr %>%
+  as.data.frame() %>%
+  pivot_longer(cols = everything()) %>%
+  # classify by subgroup of variable
+  mutate(
+      vartype = case_when(
+         name %in% vartype_whenwhere ~ "whenwhere",
+         name %in% vartype_what ~ "what",
+         name %in% vartype_how ~ "how"
+         )
+  )
+
+
+# Factor the subgroup to arrange rows easier
+arrange_order = c("whenwhere", "what", "how")
+
+hk_accidents_selected_outtable_arrange = hk_accidents_selected_outtable %>%
+  mutate(vartype_ft = factor(vartype, levels = arrange_order)) %>%
+  arrange(vartype_ft)
+
+table_whenwhere = filter(hk_accidents_selected_outtable_arrange, vartype == "whenwhere") %>% select(name, value)
+table_what = filter(hk_accidents_selected_outtable_arrange, vartype == "what") %>% select(name, value)
+table_how = filter(hk_accidents_selected_outtable_arrange, vartype == "how") %>% select(name, value)
+table_all = filter(hk_accidents_selected_outtable_arrange, !is.na(vartype)) %>% select(name, value)
+```
+
+
+### Date and Place
+
+<br>
+
+Time and detailed location of the collision is shown below.
+
+<br>
+
+
+```{r}
+knitr::kable(
+  table_whenwhere,
+  col.names	= c("Details", "Description"),
+  # Add unique id for further control with css
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+### Severity
+
+<br>
+
+Information about severity and causalities of this collision is shown below.
+
+<br>
+
+```{r}
+knitr::kable(
+  table_what,
+  col.names	= c("Details", "Description"),
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+### How the collision happened
+
+<br>
+
+Information about how the collision happened in shown below.
+
+<br>
+
+```{r}
+knitr::kable(
+  table_how,
+  col.names	= c("Details", "Description"),
+  table.attr = 'id="accident-subtable"'
+) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+### Show all details
+
+<br>
+
+Full details of the accident is shown below.
+
+<br>
+
+```{r}
+knitr::kable(
+  table_all,
+  col.names = c("Details", "Description"),
+  table.attr = 'id="accident-subtable"') %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  kableExtra::column_spec(1, bold = T, border_right = T) %>%
+  # change text color and background color of header row
+  row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
+```
+
+## {-}
 
 ---
 
@@ -133,3 +266,4 @@ hk_casualties_selected %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
 ```
+
