@@ -104,7 +104,7 @@ leaflet(hk_accidents_selected) %>%
 
 ---
 
-## Details of the accident
+## Details of the accident {.tabset }
 
 The full details of this accident are shown below.
 
@@ -153,6 +153,15 @@ table_all = filter(hk_accidents_selected_outtable_arrange, !is.na(vartype)) %>% 
 ```
 
 
+### Date and Place
+
+<br>
+
+Time and detailed location of the collision is shown below.
+
+<br>
+
+
 ```{r}
 knitr::kable(
   table_whenwhere,
@@ -166,6 +175,14 @@ knitr::kable(
   row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
 ```
 
+### Severity
+
+<br>
+
+Information about severity and causalities of this collision is shown below.
+
+<br>
+
 ```{r}
 knitr::kable(
   table_what,
@@ -178,6 +195,14 @@ knitr::kable(
   row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
 ```
 
+### How the collision happened
+
+<br>
+
+Information about how the collision happened in shown below.
+
+<br>
+
 ```{r}
 knitr::kable(
   table_how,
@@ -189,6 +214,8 @@ knitr::kable(
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = LUMEN_THEME_COLOR)
 ```
+
+## {-}
 
 ---
 
