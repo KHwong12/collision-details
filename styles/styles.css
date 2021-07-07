@@ -15,3 +15,8 @@ p, .p, ol, .ol, ul, .ul {
   line-height: 1.5;
   color: #232323;
 }
+
+#accident-subtable {
+  /* override default bootstrap settings */
+  max-width: 60% !important;
+}
