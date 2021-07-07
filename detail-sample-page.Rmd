@@ -30,6 +30,7 @@ devtools::install_github("Hong-Kong-Districts-Info/hkdatasets@f6df2ef48e62d5da1d
 
 ```{r}
 library(dplyr)
+library(tidyr)
 library(hkdatasets)
 
 library(leaflet)
@@ -101,6 +102,52 @@ leaflet(hk_accidents_selected) %>%
 ## Details of the accident
 
 The full details of this accident are shown below.
+
+```{r}
+# classify variables available into separate major types
+# require frequent update when dataset changes
+vartype_whenwhere = c("Date_Time", "Serial_No_", "District_Council_District", "Street_Name", 
+                      "Second_str", "Precise_Location", "Road_Hierarchy", "Structure_Type", "Latitude", "Longitude")
+
+vartype_what = c("Severity" , "Type_of_Collision_with_cycle" , "No_of_Vehicles_Involved" , "No_of_Casualties_Injured",
+                 "Hit_and_Run" , "Weather" , "Rain" , "Natural_Light")
+
+vartype_how = c("Vehicle_Movements", "Overtaking", "Road_Type", "Junction_Type", "Within_70m", "Crossing_Type", 
+                "Crossing_Control", "Road_Ownership")
+```
+
+```{r}
+# convert all columns to chr type
+row_chr = lapply(hk_accidents_selected, function(x) { ifelse(is.na(x), x, as.character(x)) })
+
+# convert back to data frame again, then pivot from single row to single column
+hk_accidents_selected_outtable = row_chr %>%
+  as.data.frame() %>%
+  pivot_longer(cols = everything()) %>%
+  # classify by subgroup of variable
+  mutate(
+      vartype = case_when(
+         name %in% vartype_whenwhere ~ "whenwhere",
+         name %in% vartype_what ~ "what",
+         name %in% vartype_how ~ "how"
+         )
+  )
+
+
+# Factor the subgroup to arrange rows easier
+arrange_order = c("whenwhere", "what", "how")
+
+hk_accidents_selected_outtable_arrange = hk_accidents_selected_outtable %>%
+  mutate(vartype_ft = factor(vartype, levels = arrange_order)) %>%
+  arrange(vartype_ft)
+
+table_whenwhere = filter(hk_accidents_selected_outtable_arrange, vartype == "whenwhere") %>% select(name, value)
+table_what = filter(hk_accidents_selected_outtable_arrange, vartype == "what") %>% select(name, value)
+table_how = filter(hk_accidents_selected_outtable_arrange, vartype == "how") %>% select(name, value)
+table_all = filter(hk_accidents_selected_outtable_arrange, !is.na(vartype)) %>% select(name, value)
+```
+
+
 
 ```{r}
 t(hk_accidents_selected) %>% 
