@@ -12,3 +12,4 @@ https://khwong12.github.io/collision-details/detail-sample-page.html
 
 - Add additional table and time series chart to list the number of accidents happened within proximity of this accident
 - Add open graph and meta tags of the page with [**metathis**](https://github.com/gadenbuie/metathis)
+- Add link/question mark tooltip to the description table of each variable
