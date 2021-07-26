@@ -55,13 +55,13 @@ LUMEN_THEME_COLOR = "#158cba"
 
 ```{r}
 # 66897 is selected for test
-
+# another for test without long/lat: 79581
 hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$SELECTED_ACCIDENT_NO)
 
 ```
 
 
-## Detail Report of Accident No. `r params$SELECTED_ACCIDENT_NO`
+## Detail Report of Collision No. `r as.character(params$SELECTED_ACCIDENT_NO)`
 
 <br>
 
@@ -81,9 +81,9 @@ htmltools::HTML(
 ```
 
 
-This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
+This collision happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` collision with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
 
-The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
+The road where collision happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
 <br>
 
@@ -91,8 +91,6 @@ The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` r
 
 ```{r, eval=TRUE}
 is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
-
-# TODO: print additional message if collision does not have long/lat data
 ```
 
 ```{r, eval=is_valid_loglat, out.width='100%'}
@@ -102,10 +100,15 @@ leaflet(hk_accidents_selected) %>%
   addMarkers(~longitude, ~latitude)
 ```
 
+```{r, eval=!(is_valid_loglat)}
+# Show this section if collision does not have long/lat data
+p(strong("Detailed location map is not available for this collision."), style = "text-align:center")
+```
+
 
 ---
 
-## Details of the accident {.tabset }
+## Details of the collision {.tabset }
 
 Click one of the following tabs to check one specific category details of the collision. Or, click **Show all details** tab to check the full list of details.
 
@@ -124,7 +127,8 @@ vartype_how = c("Vehicle_Movements", "Overtaking", "Road_Type", "Junction_Type",
 
 ```{r}
 # convert all columns to chr type
-row_chr = lapply(hk_accidents_selected, function(x) { ifelse(is.na(x), x, as.character(x)) })
+row_chr = lapply(hk_accidents_selected, as.character)
+
 
 # convert back to data frame again, then pivot from single row to single column
 hk_accidents_selected_outtable = row_chr %>%
@@ -220,7 +224,7 @@ knitr::kable(
 
 <br>
 
-Full details of the accident is shown below.
+Full details of the collision is shown below.
 
 <br>
 
@@ -246,8 +250,10 @@ hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == params$SELECTED_ACCIDEN
 ```
 
 ```{r}
-hk_vehicles_selected  %>% 
-  knitr::kable(caption = "List of vehicles involved", digits = 3, format.args = list(big.mark = ",")) %>%
+hk_vehicles_selected %>%
+  select(-c(OBJECTID, Serial_No_, Year)) %>%
+  # do not add thousand separators as year are now in double type
+  knitr::kable(caption = "List of vehicles involved") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
@@ -261,8 +267,9 @@ hk_casualties_selected = filter(hk_casualties, Serial_No_ == params$SELECTED_ACC
 
 ```{r}
 hk_casualties_selected %>% 
-  select(-c(Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
-  knitr::kable(caption = "List of casualties", digits = 3, format.args = list(big.mark = ",")) %>%
+  select(-c(OBJECTID, Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
+  # do not add thousand separators as year are now in double type
+  knitr::kable(caption = "List of casualties") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
