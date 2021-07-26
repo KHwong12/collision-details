@@ -55,7 +55,7 @@ LUMEN_THEME_COLOR = "#158cba"
 
 ```{r}
 # 66897 is selected for test
-
+# another for test without long/lat: 79581
 hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$SELECTED_ACCIDENT_NO)
 
 ```
@@ -91,8 +91,6 @@ The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` r
 
 ```{r, eval=TRUE}
 is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_selected$longitude)
-
-# TODO: print additional message if collision does not have long/lat data
 ```
 
 ```{r, eval=is_valid_loglat, out.width='100%'}
@@ -100,6 +98,11 @@ is_valid_loglat = !is.na(hk_accidents_selected$latitude) & !is.na(hk_accidents_s
 leaflet(hk_accidents_selected) %>%
   addProviderTiles("Stamen.TonerLite") %>%
   addMarkers(~longitude, ~latitude)
+```
+
+```{r, eval=!(is_valid_loglat)}
+# Show this section if collision does not have long/lat data
+p(strong("Detailed location map is not available for this collision."), style = "text-align:center")
 ```
 
 
