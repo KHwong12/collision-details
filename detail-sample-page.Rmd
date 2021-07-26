@@ -124,7 +124,8 @@ vartype_how = c("Vehicle_Movements", "Overtaking", "Road_Type", "Junction_Type",
 
 ```{r}
 # convert all columns to chr type
-row_chr = lapply(hk_accidents_selected, function(x) { ifelse(is.na(x), x, as.character(x)) })
+row_chr = lapply(hk_accidents_selected, as.character)
+
 
 # convert back to data frame again, then pivot from single row to single column
 hk_accidents_selected_outtable = row_chr %>%
