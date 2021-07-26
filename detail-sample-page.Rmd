@@ -61,7 +61,7 @@ hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$SELECTED_ACCID
 ```
 
 
-## Detail Report of Accident No. `r params$SELECTED_ACCIDENT_NO`
+## Detail Report of Accident No. `r as.character(params$SELECTED_ACCIDENT_NO)`
 
 <br>
 
