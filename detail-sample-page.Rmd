@@ -61,7 +61,7 @@ hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$SELECTED_ACCID
 ```
 
 
-## Detail Report of Accident No. `r as.character(params$SELECTED_ACCIDENT_NO)`
+## Detail Report of Collision No. `r as.character(params$SELECTED_ACCIDENT_NO)`
 
 <br>
 
@@ -81,9 +81,9 @@ htmltools::HTML(
 ```
 
 
-This accident happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` accident with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
+This collision happened on `r strftime(hk_accidents_selected[["Date_Time"]], "%d %B, %Y (%A), at %H:%S")`. It was a `r hk_accidents_selected[["Severity"]]` collision with `r hk_accidents_selected[["No_of_Casualties_Injured"]]` causalities, involving `r hk_accidents_selected[["No_of_Vehicles_Involved"]]` vehicles. The weather was `r hk_accidents_selected[["Weather"]]` and `r hk_accidents_selected[["Rain"]]`.
 
-The road where accident happened is a `r hk_accidents_selected[["Road_Type"]]` road.
+The road where collision happened is a `r hk_accidents_selected[["Road_Type"]]` road.
 
 <br>
 
@@ -108,7 +108,7 @@ p(strong("Detailed location map is not available for this collision."), style = 
 
 ---
 
-## Details of the accident {.tabset }
+## Details of the collision {.tabset }
 
 Click one of the following tabs to check one specific category details of the collision. Or, click **Show all details** tab to check the full list of details.
 
@@ -224,7 +224,7 @@ knitr::kable(
 
 <br>
 
-Full details of the accident is shown below.
+Full details of the collision is shown below.
 
 <br>
 
