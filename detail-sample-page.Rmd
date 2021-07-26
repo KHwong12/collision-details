@@ -247,8 +247,10 @@ hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == params$SELECTED_ACCIDEN
 ```
 
 ```{r}
-hk_vehicles_selected  %>% 
-  knitr::kable(caption = "List of vehicles involved", digits = 3, format.args = list(big.mark = ",")) %>%
+hk_vehicles_selected %>%
+  select(-c(OBJECTID, Serial_No_, Year)) %>%
+  # do not add thousand separators as year are now in double type
+  knitr::kable(caption = "List of vehicles involved") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
@@ -262,8 +264,9 @@ hk_casualties_selected = filter(hk_casualties, Serial_No_ == params$SELECTED_ACC
 
 ```{r}
 hk_casualties_selected %>% 
-  select(-c(Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
-  knitr::kable(caption = "List of casualties", digits = 3, format.args = list(big.mark = ",")) %>%
+  select(-c(OBJECTID, Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
+  # do not add thousand separators as year are now in double type
+  knitr::kable(caption = "List of casualties") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
   # change text color and background color of header row
   row_spec(0, color = "#FFFFFF", background = "#178CBA")
