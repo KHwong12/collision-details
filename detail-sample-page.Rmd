@@ -23,17 +23,11 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 options(scipen = 999)
 ```
 
-```{r, eval=FALSE}
-# Temp solution before next release to CRAN
-devtools::install_github("Hong-Kong-Districts-Info/hkdatasets@f6df2ef48e62d5da1d643e04e266dc876d488f37")
-```
-
-
-
 ```{r}
 library(dplyr)
 library(tidyr)
-library(hkdatasets)
+library(readr)
+library(fst)
 
 library(leaflet)
 library(kableExtra)
@@ -43,9 +37,9 @@ library(htmltools)
 
 ```{r}
 ## Take data from {hkdatasets}
-hk_accidents = hkdatasets::hk_accidents
-hk_vehicles = hkdatasets::hk_vehicles
-hk_casualties = hkdatasets::hk_casualties
+hk_accidents = fst::read_fst("./data/hk_accidents.fst")
+hk_vehicles = fst::read_fst("./data/hk_vehicles.fst")
+hk_casualties = fst::read_fst("./data/hk_casualties.fst")
 ```
 
 ```{r}
