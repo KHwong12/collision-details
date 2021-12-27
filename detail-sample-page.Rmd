@@ -25,14 +25,16 @@ options(scipen = 999)
 
 ```{r sanity-check}
 
-is_incorrect_serial_no = params$SELECTED_ACCIDENT_NO < 1 | params$SELECTED_ACCIDENT_NO > 95821
+is_valid_serial_no = (is.numeric(params$SELECTED_ACCIDENT_NO) &
+                          # use isTRUE to escape from logical(0) if SELECTED_ACCIDENT_NO is NULL
+                          isTRUE(params$SELECTED_ACCIDENT_NO >= 1) & isTRUE(params$SELECTED_ACCIDENT_NO <= 95821))
 
-if (is_incorrect_serial_no) {
+if (!is_valid_serial_no) {
   p(strong("This collision serial number does not exist in the database!"), style = "text-align:center")
 }
 
 # Needs to be separated html text above, otherwise HTML text will not be rendered
-if (is_incorrect_serial_no) {
+if (!is_valid_serial_no) {
   knitr::knit_exit()
 }
 
