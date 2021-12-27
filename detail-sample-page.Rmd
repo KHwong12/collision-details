@@ -14,7 +14,7 @@ output:
       after_body: templates/footer.html
 always_allow_html: yes
 params:
-  SELECTED_ACCIDENT_NO: NULL
+  COLLISION_SERIAL_NO: NULL
 ---
 
 ```{r setup, include=FALSE}
@@ -25,9 +25,9 @@ options(scipen = 999)
 
 ```{r sanity-check}
 
-is_valid_serial_no = (is.numeric(params$SELECTED_ACCIDENT_NO) &
-                          # use isTRUE to escape from logical(0) if SELECTED_ACCIDENT_NO is NULL
-                          isTRUE(params$SELECTED_ACCIDENT_NO >= 1) & isTRUE(params$SELECTED_ACCIDENT_NO <= 95821))
+is_valid_serial_no = (is.numeric(params$COLLISION_SERIAL_NO) &
+                          # use isTRUE to escape from logical(0) if COLLISION_SERIAL_NO is NULL
+                          isTRUE(params$COLLISION_SERIAL_NO >= 1) & isTRUE(params$COLLISION_SERIAL_NO <= 95821))
 
 if (!is_valid_serial_no) {
   p(strong("This collision serial number does not exist in the database!"), style = "text-align:center")
@@ -67,12 +67,12 @@ LUMEN_THEME_COLOR = "#158cba"
 ```{r}
 # 66897 is selected for test
 # another for test without long/lat: 79581
-hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$SELECTED_ACCIDENT_NO)
+hk_accidents_selected = filter(hk_accidents, Serial_No_ == params$COLLISION_SERIAL_NO)
 
 ```
 
 
-## Detail Report of Collision No. `r as.character(params$SELECTED_ACCIDENT_NO)`
+## Detail Report of Collision No. `r as.character(params$COLLISION_SERIAL_NO)`
 
 <br>
 
@@ -257,7 +257,7 @@ knitr::kable(
 ## Vehicles involved
 
 ```{r}
-hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == params$SELECTED_ACCIDENT_NO)
+hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == params$COLLISION_SERIAL_NO)
 ```
 
 ```{r}
@@ -275,7 +275,7 @@ hk_vehicles_selected %>%
 ## Causalities
 
 ```{r}
-hk_casualties_selected = filter(hk_casualties, Serial_No_ == params$SELECTED_ACCIDENT_NO)
+hk_casualties_selected = filter(hk_casualties, Serial_No_ == params$COLLISION_SERIAL_NO)
 ```
 
 ```{r}
