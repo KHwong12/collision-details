@@ -14,13 +14,28 @@ output:
       after_body: templates/footer.html
 always_allow_html: yes
 params:
-  SELECTED_ACCIDENT_NO: 66897
+  SELECTED_ACCIDENT_NO: NULL
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 options(scipen = 999)
+```
+
+```{r sanity-check}
+
+is_incorrect_serial_no = params$SELECTED_ACCIDENT_NO < 1 | params$SELECTED_ACCIDENT_NO > 95821
+
+if (is_incorrect_serial_no) {
+  p(strong("This collision serial number does not exist in the database!"), style = "text-align:center")
+}
+
+# Needs to be separated html text above, otherwise HTML text will not be rendered
+if (is_incorrect_serial_no) {
+  knitr::knit_exit()
+}
+
 ```
 
 ```{r}
@@ -244,8 +259,10 @@ hk_vehicles_selected = filter(hk_vehicles, Serial_No_ == params$SELECTED_ACCIDEN
 ```
 
 ```{r}
+SELECTED_VEHICLE_COLUMNS = c("Driver_Age", "Driver_Sex", "Year_of_Manufacture", "Severity_of_Accident", "Vehicle_Class")
+
 hk_vehicles_selected %>%
-  select(-c(OBJECTID, Serial_No_, Year)) %>%
+  select(all_of(SELECTED_VEHICLE_COLUMNS)) %>%
   # do not add thousand separators as year are now in double type
   knitr::kable(caption = "List of vehicles involved") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
@@ -260,8 +277,10 @@ hk_casualties_selected = filter(hk_casualties, Serial_No_ == params$SELECTED_ACC
 ```
 
 ```{r}
-hk_casualties_selected %>% 
-  select(-c(OBJECTID, Serial_No_, Year, starts_with("Location_of_Injury_"))) %>%
+SELECTED_CAUSALTY_COLUMNS = c("Casualty_Age", "Casualty_Sex","Degree_of_Injury", "Role_of_Casualty", "Pedestrian_Action", "Vehicle_Class_of_Driver_or_Pass")
+
+hk_casualties_selected %>%
+  select(all_of(SELECTED_CAUSALTY_COLUMNS)) %>%
   # do not add thousand separators as year are now in double type
   knitr::kable(caption = "List of casualties") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
